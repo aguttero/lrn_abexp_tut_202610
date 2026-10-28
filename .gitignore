@@ -1,0 +1,6 @@
+# Adobe runtime files
+dist/
+node_modules/
+
+# Other files
+.DS_Store
