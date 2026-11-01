@@ -31,6 +31,12 @@ addOnUISdk.ready.then(async () => {
   const sandboxProxy = await runtime.apiProxy("documentSandbox");
   sandboxProxy.log("Document sandbox up and running.");
 
+  // add your code here
+  createShapeButton.onclick = async () => {
+    // console.log("button clicked");
+    sandboxProxy.createShape({ width: 100, height: 100 });
+  };
+
   // Enabling CTA elements only when the addOnUISdk is ready
   createShapeButton.disabled = false;
 });
