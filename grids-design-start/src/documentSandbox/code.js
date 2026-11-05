@@ -22,6 +22,7 @@ function start() {
       console.log(...args);
     },
     // other properties will go here...
+    // ZAG: First property (create rectangle)
     createShape: ({ width, height }) => {
       const rect = editor.createRectangle();
       rect.width = width;

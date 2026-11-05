@@ -17,8 +17,16 @@ import "@spectrum-web-components/theme/theme-light.js";
 import "@spectrum-web-components/theme/express/theme-light.js";
 import "@spectrum-web-components/theme/express/scale-medium.js";
 import "@spectrum-web-components/theme/sp-theme.js";
+import "@spectrum-web-components/theme/sp-theme.js";
 
 import "@spectrum-web-components/button/sp-button.js";
+
+// these imports addedd for the tutorial
+import "@spectrum-web-components/button-group/sp-button-group.js";
+import "@spectrum-web-components/field-label/sp-field-label.js";
+import "@spectrum-web-components/number-field/sp-number-field.js";
+import "@spectrum-web-components/slider/sp-slider.js";
+import "@spectrum-web-components/swatch/sp-swatch.js";
 
 import addOnUISdk from "https://new.express.adobe.com/static/add-on-sdk/sdk.js";
 
@@ -32,11 +40,73 @@ addOnUISdk.ready.then(async () => {
   sandboxProxy.log("Document sandbox up and running.");
 
   // add your code here
-  createShapeButton.onclick = async () => {
-    // console.log("button clicked");
-    sandboxProxy.createShape({ width: 100, height: 100 });
+  // ZAG: V1 Rectangle
+  // createShapeButton.onclick = async () => {
+  // console.log("button clicked");
+  // ZAG: console.log to chrome browser console
+  //   sandboxProxy.createShape({ width: 100, height: 100 });
+  // };
+
+  // ZAG: V2 buttons and slider
+  // Initialize html elements
+  const rowsInput = document.getElementById("rows");
+  const colsInput = document.getElementById("cols");
+  const gutterInput = document.getElementById("gutter");
+
+  rowsInput.value = 4;
+  cols.colsInput.value = 6;
+  gutterInput.value = 10;
+
+  const colsColorPicker = document.getElementById("colsColorPicker");
+  const colsColorSwatch = document.getElementById("colsColorSwatch");
+  const rowsColorPicker = document.getElementById("rowsColorPicker");
+  const rowsColorSwatch = document.getElementById("rowsColorSwatch");
+
+  colsColorPicker.value = "#ffcccc";
+  colsColorSwatch.color = "#ffcccc";
+  rowsColorPicker.value = "#ffcccc";
+  rowsColorSwatch.color = "#ffcccc";
+
+  // Trick to make the Color Picker to appear in display with click listener in the color swatch:
+  colsColorSwatch.addEventListener("click", function () {
+    colsColorPicker.click();
+  });
+  // when users selects a color thru the picker we want the swatch to reflect the change
+  colsColorPicker.addEventListener("input", function (event) {
+    const selectedColor = event.target.value;
+    colsColorSwatch.setAttribute("color", selectedColor);
+  });
+
+  rowsColorSwatch.addEventListener("click", function () {
+    rowsColorPicker.click();
+  });
+  // when users selects a color thru the picker we want the swatch to reflect the change
+  rowsColorPicker.addEventListener("input", function (event) {
+    const selectedColor = event.target.value;
+    rowsColorSwatch.setAttribute("color", selectedColor);
+  });
+
+  // CTA buttons
+  const createGridBtn = document.getElementById("createGrid");
+  const deleteGridBtn = document.getElementById("deleteGrid");
+
+  deleteGridBtn.onclick = async (event) => {
+    await sandboxProxy.deleteGrid();
+    deleteGridBtn.disabled = true; // once you delete the grid makes no sense to hace the delete grid button enabled
   };
 
+  createGridBtn.onclick = async (event) => {
+    await sandboxProxy.addGrid({
+      columns: colsInput.value,
+      rows: rowsInput.value,
+      gutter: gutterInput.value,
+      columnColor: colsColorPicker.value,
+      rowColor: rowsColorPicker.value,
+    });
+    deleteGridBtn.disabled = false;
+  };
+  // ZAG: V1 Rectangle create createShapeButton
   // Enabling CTA elements only when the addOnUISdk is ready
-  createShapeButton.disabled = false;
+  // createShapeButton.disabled = false;
+  createGridBtn.disabled = false;
 });
