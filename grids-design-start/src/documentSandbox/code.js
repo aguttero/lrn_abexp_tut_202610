@@ -18,12 +18,11 @@ import { editor, colorUtils, constants } from "express-document-sdk";
 
 function start() {
   runtime.exposeApi({
-    log: (...args) => {
+    log(...args) {
       console.log(...args);
     },
     // other properties will go here...
-    // ZAG: First property (create rectangle)
-    createShape: ({ width, height }) => {
+    createShape ({ width, height }) {
       const rect = editor.createRectangle();
       rect.width = width;
       rect.height = height;
@@ -33,12 +32,8 @@ function start() {
       const fillColor = editor.makeColorFill(col);
       rect.fill = fillColor;
 
-      //ZAG: this renders the rectangle in the page:
-      // we append the 'rect' to the children list of the insertionParent
-      // this point to the parent of the currently selected node
-      // adding a rectangle as a sibling of the active selected node in express
-      // if there is non active selected then the page itself is the rectangle parent
       editor.context.insertionParent.children.append(rect);
+      this.log("ZAG: Shape created.");
 
     },
   });
