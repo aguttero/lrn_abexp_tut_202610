@@ -18,12 +18,15 @@ import { editor, colorUtils, constants } from "express-document-sdk";
 
 function start() {
   runtime.exposeApi({
-    log: (...args) => {
+    // ZAG Video tutorial version: => function (this. does not work.. need .bind.this.) log: (...args) => { }
+    log(...args) {
       console.log(...args);
     },
     // other properties will go here...
     // ZAG: First property (create rectangle)
-    createShape: ({ width, height }) => {
+    //
+    // ZAG: video tutorial version: createShape: ({ width, height }) => { },
+    createShape({ width, height }) {
       const rect = editor.createRectangle();
       rect.width = width;
       rect.height = height;
@@ -40,6 +43,18 @@ function start() {
       // if there is non active selected then the page itself is the rectangle parent
       editor.context.insertionParent.children.append(rect);
 
+      // ZAG ;Alternatively, you can target the insertion point specifically rather
+      // than relying on what happens to be selected at the time of execution.
+      // For instance, the following code uses the first Artboard of the active Page.
+
+      // const currentPage = editor.context.currentPage; // page
+      // const currentArtboard = currentPage.artboards.first; // artboard
+      // currentArtboard.children.append(rect); // children
+      // or
+      // editor.context.currentPage.artboards.first.children.append(rect);
+
+      // ZAG: calling the local function log
+      this.log("ZAG: Shape created");
     },
   });
 }

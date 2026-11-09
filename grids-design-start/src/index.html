@@ -24,9 +24,46 @@ governing permissions and limitations under the License. -->
     <link rel="stylesheet" href="styles.css" />
   </head>
 
+  <!-- index.html -->
+
   <body>
-    <sp-theme scale="medium" color="light" theme="express" system="express">
-      <sp-button id="createShape" disabled>Create shape</sp-button>
+    <sp-theme scale="medium" color="light" system="express">
+      <h2>Design Grid creator</h2>
+      <div class="row gap-20">
+        <div class="row">
+          <div class="column">
+            <sp-field-label for="rows" size="m">Rows</sp-field-label>
+            <sp-number-field id="rows" min="1" max="20"> </sp-number-field>
+          </div>
+          <sp-swatch id="rowsColorSwatch" class="color-well"></sp-swatch>
+          <input type="color" id="rowsColorPicker" style="display: none" />
+        </div>
+        <div class="row">
+          <div class="column">
+            <sp-field-label for="cols" size="m">Columns</sp-field-label>
+            <sp-number-field id="cols" min="1" max="12"> </sp-number-field>
+          </div>
+          <sp-swatch id="colsColorSwatch" class="color-well"></sp-swatch>
+          <input type="color" id="colsColorPicker" style="display: none" />
+        </div>
+      </div>
+      <div class="row">
+        <sp-slider
+          label="Gutter"
+          id="gutter"
+          variant="filled"
+          editable
+          hide-stepper
+          min="1"
+          max="50"
+          format-options='{"style": "unit", "unit": "px"}'
+          step="1"
+        ></sp-slider>
+      </div>
+      <sp-button-group horizontal>
+        <sp-button id="deleteGrid" variant="secondary" disabled>Delete</sp-button>
+        <sp-button id="createGrid" disabled>Create</sp-button>
+      </sp-button-group>
     </sp-theme>
   </body>
 </html>

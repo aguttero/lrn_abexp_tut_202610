@@ -13,7 +13,7 @@ governing permissions and limitations under the License.
 import addOnSandboxSdk from "add-on-sdk-document-sandbox";
 const { runtime } = addOnSandboxSdk.instance;
 
-// ZAG: import sdk classes: to user createRectangle() method
+// ZAG: import sdk classes
 import { editor, colorUtils, constants } from "express-document-sdk";
 
 function start() {
@@ -22,19 +22,10 @@ function start() {
       console.log(...args);
     },
     // other properties will go here...
-    createShape ({ width, height }) {
-      const rect = editor.createRectangle();
-      rect.width = width;
-      rect.height = height;
-      rect.translation = { x: 50, y: 50 };
-
-      const col = colorUtils.fromRGB(0.9, 0.5, 0.9);
-      const fillColor = editor.makeColorFill(col);
-      rect.fill = fillColor;
-
-      editor.context.insertionParent.children.append(rect);
-      this.log("ZAG: Shape created.");
-
+    addGrid({ columns, rows, gutter, columnColor, rowColor }) {
+      console.log("addGrid", columns, rows, gutter, columnColor, rowColor);
+      this.log("addGrid", columns, rows, gutter, columnColor, rowColor);
+      this.log("ZAG:grid added");
     },
   });
 }

@@ -17,104 +17,100 @@ import "@spectrum-web-components/theme/theme-light.js";
 import "@spectrum-web-components/theme/express/theme-light.js";
 import "@spectrum-web-components/theme/express/scale-medium.js";
 import "@spectrum-web-components/theme/sp-theme.js";
-import "@spectrum-web-components/theme/sp-theme.js";
 
 // these imports addedd for the tutorial
 // Create Rectangle Tutorial:
 import "@spectrum-web-components/button/sp-button.js";
 
-// import "@spectrum-web-components/button-group/sp-button-group.js";
-// import "@spectrum-web-components/field-label/sp-field-label.js";
-// import "@spectrum-web-components/number-field/sp-number-field.js";
-// import "@spectrum-web-components/slider/sp-slider.js";
-// import "@spectrum-web-components/swatch/sp-swatch.js";
+import "@spectrum-web-components/button-group/sp-button-group.js";
+import "@spectrum-web-components/field-label/sp-field-label.js";
+import "@spectrum-web-components/number-field/sp-number-field.js";
+import "@spectrum-web-components/slider/sp-slider.js";
+import "@spectrum-web-components/swatch/sp-swatch.js";
 
-import addOnUISdk from "https://new.express.adobe.com/static/add-on-sdk/sdk.js";
+// import addOnUISdk from "https://new.express.adobe.com/static/add-on-sdk/sdk.js";
+
+// Import the ColorPicker components
+import addOnUISdk, {
+  ColorPickerEvent,
+  ColorPickerPlacement,
+} from "https://express.adobe.com/static/add-on-sdk/sdk.js";
+
+// ZAG Code from written tutorial
 
 addOnUISdk.ready.then(async () => {
   console.log("addOnUISdk is ready for use.");
-  const createShapeButton = document.getElementById("createShape");
 
-  // Get the UI runtime.
+  // Get the Document Sandbox. (UI runtime)
   const { runtime } = addOnUISdk.instance;
   const sandboxProxy = await runtime.apiProxy("documentSandbox");
   sandboxProxy.log("Document sandbox up and running.");
 
   // add your code here
-  // ZAG: V1 Rectangle
-  createShapeButton.onclick = async () => {
-  // console.log("button clicked");
-  // ZAG: console.log to chrome browser console
-    sandboxProxy.createShape({ width: 200, height: 100 });
+  // Input fields -------------------------------------------
+  // Initialize html elements
+  const rowsInput = document.getElementById("rows");
+  const colsInput = document.getElementById("cols");
+  const gutterInput = document.getElementById("gutter");
+
+  rowsInput.value = 4;
+  colsInput.value = 6;
+  gutterInput.value = 10;
+
+  // Color pickers ------------------------------------------
+
+  const colsColorPicker = document.getElementById("colsColorPicker");
+  const colsColorSwatch = document.getElementById("colsColorSwatch");
+  const rowsColorPicker = document.getElementById("rowsColorPicker");
+  const rowsColorSwatch = document.getElementById("rowsColorSwatch");
+
+  colsColorPicker.value = "#ffcccc";
+  colsColorSwatch.color = "#ffcccc";
+  rowsColorPicker.value = "#ccccff";
+  rowsColorSwatch.color = "#ccccff";
+
+  // Trick to make the Color Picker to appear in display with click listener in the color swatch:
+  colsColorSwatch.addEventListener("click", function () {
+    colsColorPicker.click();
+  });
+  // when users selects a color thru the picker we want the swatch to reflect the change
+  colsColorPicker.addEventListener("input", function (event) {
+    const selectedColor = event.target.value;
+    colsColorSwatch.setAttribute("color", selectedColor);
+  });
+
+  rowsColorSwatch.addEventListener("click", function () {
+    rowsColorPicker.click();
+  });
+  rowsColorPicker.addEventListener("input", function (event) {
+    const selectedColor = event.target.value;
+    rowsColorSwatch.setAttribute("color", selectedColor);
+  });
+
+  // CTA Buttons --------------------------------------------
+
+  const createGridBtn = document.getElementById("createGrid");
+  const deleteGridBtn = document.getElementById("deleteGrid");
+
+  deleteGridBtn.onclick = async (event) => {
+    const res = await sandboxProxy.deleteGrid();
+    if (res) {
+      // When there's been an error deleting the grid, you may want to handle it here
+    }
+    deleteGridBtn.disabled = true; // once grid us deleted button is disabled
   };
 
-  // above same as:
-  // createShapeButton.addEventListener("click", async () => {
-  // sandboxProxy.createShape({ width: 200, height: 100 });
-  // });
+  createGridBtn.onclick = async (event) => {
+    await sandboxProxy.addGrid({
+      columns: colsInput.value,
+      rows: rowsInput.value,
+      gutter: gutterInput.value,
+      columnColor: colsColorPicker.value,
+      rowColor: rowsColorPicker.value,
+    });
+    deleteGridBtn.disabled = false;
+  };
 
-
-  // ZAG: V2 buttons and slider
-  // Initialize html elements
-//   const rowsInput = document.getElementById("rows");
-//   const colsInput = document.getElementById("cols");
-//   const gutterInput = document.getElementById("gutter");
-//
-//   rowsInput.value = 4;
-//   cols.colsInput.value = 6;
-//   gutterInput.value = 10;
-//
-//   const colsColorPicker = document.getElementById("colsColorPicker");
-//   const colsColorSwatch = document.getElementById("colsColorSwatch");
-//   const rowsColorPicker = document.getElementById("rowsColorPicker");
-//   const rowsColorSwatch = document.getElementById("rowsColorSwatch");
-//
-//   colsColorPicker.value = "#ffcccc";
-//   colsColorSwatch.color = "#ffcccc";
-//   rowsColorPicker.value = "#ffcccc";
-//   rowsColorSwatch.color = "#ffcccc";
-//
-//   // Trick to make the Color Picker to appear in display with click listener in the color swatch:
-//   colsColorSwatch.addEventListener("click", function () {
-//     colsColorPicker.click();
-//   });
-//   // when users selects a color thru the picker we want the swatch to reflect the change
-//   colsColorPicker.addEventListener("input", function (event) {
-//     const selectedColor = event.target.value;
-//     colsColorSwatch.setAttribute("color", selectedColor);
-//   });
-//
-//   rowsColorSwatch.addEventListener("click", function () {
-//     rowsColorPicker.click();
-//   });
-//   // when users selects a color thru the picker we want the swatch to reflect the change
-//   rowsColorPicker.addEventListener("input", function (event) {
-//     const selectedColor = event.target.value;
-//     rowsColorSwatch.setAttribute("color", selectedColor);
-//   });
-//
-//   // CTA buttons
-//   const createGridBtn = document.getElementById("createGrid");
-//   const deleteGridBtn = document.getElementById("deleteGrid");
-//
-//   deleteGridBtn.onclick = async (event) => {
-//     await sandboxProxy.deleteGrid();
-//     deleteGridBtn.disabled = true; // once you delete the grid makes no sense to hace the delete grid button enabled
-//   };
-//
-//   createGridBtn.onclick = async (event) => {
-//     await sandboxProxy.addGrid({
-//       columns: colsInput.value,
-//       rows: rowsInput.value,
-//       gutter: gutterInput.value,
-//       columnColor: colsColorPicker.value,
-//       rowColor: rowsColorPicker.value,
-//     });
-//     deleteGridBtn.disabled = false;
-//   };
-
-  // ZAG: V1 Rectangle create createShapeButton
-  // Enabling CTA elements only when the addOnUISdk is ready
-  createShapeButton.disabled = false;
-  // createGridBtn.disabled = false;
+  // Only now it is safe to enable the button
+  createGridBtn.disabled = false;
 });
