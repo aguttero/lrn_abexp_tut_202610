@@ -50,10 +50,6 @@ const addRows = (rowsNumber, gutter, color) => {
   // see docs Document APIs > Constants > BlendMode
   rowsGroup.blendMode = constants.BlendMode.multiply;
 
-  // ZAG: validate how to activate this:
-  // ZAG: guess that the group needs to be the active selection
-  // lock the group to prevent the user to accidentally shifting the grid around
-  // gridGroup.lock = true;
   return rowsGroup;
 };
 

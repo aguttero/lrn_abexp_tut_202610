@@ -11,9 +11,6 @@ governing permissions and limitations under the License.
 */
 
 import addOnSandboxSdk from "add-on-sdk-document-sandbox";
-// Get the Document Sandbox:
-const { runtime } = addOnSandboxSdk.instance;
-
 // ZAG: import sdk classes
 // import { editor, colorUtils, constants } from "express-document-sdk";
 import { editor } from "express-document-sdk";
@@ -21,23 +18,30 @@ import { editor } from "express-document-sdk";
 // ZAG: import helper functions
 import { addColumns, addRows } from "./shapeUtils";
 
+// Get the Document Sandbox:
+const { runtime } = addOnSandboxSdk.instance;
+
 // ZAG V2: global variable to call gridGroup that resides in addGrid fn from delteGrid fn
 // initialize global var as null;
 // there is a fallback structure in deleteGrid fn
 let gridRef = null;
-const mainPage = editor.context.currentPage;
 
 function start() {
   const sandboxProxy = {
     addGrid({ columns, rows, gutter, columnColor, rowColor }) {
       console.log("ZAG addGrid:", columns, rows, gutter, columnColor, rowColor);
+
+      // Get the active page
+      const mainPage = editor.context.currentPage;
+
+      // Crate the Grid
       // To group both columns and rows groups together
       // v1: addRows(rows, gutter, rowColor);
-      // v2:
+      // v2: const rowGroup gets the return value of the group from shapeUtils
       const rowGroup = addRows(rows, gutter, rowColor);
       const columnGroup = addColumns(columns, gutter, columnColor);
-      // rowGroup.lock = true;
 
+      // Create the grid's group
       // v2: parent outer group that groups both groups:
       const gridGroup = editor.createGroup();
       mainPage.artboards.first.children.append(gridGroup);
