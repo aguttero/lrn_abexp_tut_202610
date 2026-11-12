@@ -21,16 +21,52 @@ import { editor } from "express-document-sdk";
 // ZAG: import helper functions
 import { addColumns, addRows } from "./shapeUtils";
 
+// ZAG V2: global variable to call gridGroup that resides in addGrid fn from delteGrid fn
+// initialize global var as null;
+// there is a fallback structure in deleteGrid fn
+let gridRef = null;
+const mainPage = editor.context.currentPage;
 
 function start() {
   const sandboxProxy = {
     addGrid({ columns, rows, gutter, columnColor, rowColor }) {
-      addRows(rows, gutter, rowColor);
-      addColumns(columns, gutter, columnColor);
       console.log("ZAG addGrid:", columns, rows, gutter, columnColor, rowColor);
+      // To group both columns and rows groups together
+      // v1: addRows(rows, gutter, rowColor);
+      // v2:
+      const rowGroup = addRows(rows, gutter, rowColor);
+      const columnGroup = addColumns(columns, gutter, columnColor);
+      // rowGroup.lock = true;
+
+      // v2: parent outer group that groups both groups:
+      const gridGroup = editor.createGroup();
+      mainPage.artboards.first.children.append(gridGroup);
+      gridGroup.children.append(rowGroup, columnGroup);
+
+      // lock the group to prevent the user to accidentally shifting the grid around
+      gridGroup.locked = true;
+
+      // pass to global var to call it formo deleteGrid fn
+      gridRef = gridGroup;
     },
     deleteGrid() {
       // some code
+      console.log("Deleting the grid ...");
+
+      // v1 simple delete without validations:
+      // gridRef.removeFromParent(); //
+
+      if (gridRef) {
+        console.log("ZAG: gridRef is not null :-)");
+        try {
+          gridRef.removeFromParent();
+          gridRef = null;
+        } catch (error) {
+          console.log("ZAG: error catched");
+          console.error(error);
+          return "Error: the Grid could not be deleted";
+        }
+      }
     },
   };
   runtime.exposeApi(sandboxProxy);
