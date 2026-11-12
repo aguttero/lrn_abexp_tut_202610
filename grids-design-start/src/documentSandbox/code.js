@@ -11,23 +11,28 @@ governing permissions and limitations under the License.
 */
 
 import addOnSandboxSdk from "add-on-sdk-document-sandbox";
+// Get the Document Sandbox:
 const { runtime } = addOnSandboxSdk.instance;
 
 // ZAG: import sdk classes
-import { editor, colorUtils, constants } from "express-document-sdk";
+// import { editor, colorUtils, constants } from "express-document-sdk";
+import { editor } from "express-document-sdk";
+
+// ZAG: import helper functions
+import { addColumns, addRows } from "./shapeUtils";
+
 
 function start() {
-  runtime.exposeApi({
-    log(...args) {
-      console.log(...args);
-    },
-    // other properties will go here...
+  const sandboxProxy = {
     addGrid({ columns, rows, gutter, columnColor, rowColor }) {
-      console.log("addGrid", columns, rows, gutter, columnColor, rowColor);
-      this.log("addGrid", columns, rows, gutter, columnColor, rowColor);
-      this.log("ZAG:grid added");
+      addRows(rows, gutter, rowColor);
+      addColumns(columns, gutter, columnColor);
+      console.log("ZAG addGrid:", columns, rows, gutter, columnColor, rowColor);
     },
-  });
+    deleteGrid() {
+      // some code
+    },
+  };
+  runtime.exposeApi(sandboxProxy);
 }
-
 start();
