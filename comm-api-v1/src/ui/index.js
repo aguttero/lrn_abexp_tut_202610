@@ -1,24 +1,51 @@
-import addOnUISdk from "https://new.express.adobe.com/static/add-on-sdk/sdk.js";
+// SWC imports
+import "@spectrum-web-components/styles/typography.css";
+import "@spectrum-web-components/theme/src/themes.js";
+import "@spectrum-web-components/theme/theme-light.js";
+import "@spectrum-web-components/theme/express/theme-light.js";
+import "@spectrum-web-components/theme/express/scale-medium.js";
+import "@spectrum-web-components/theme/sp-theme.js";
 
+import "@spectrum-web-components/status-light/sp-status-light.js";
+import "@spectrum-web-components/table/elements.js";
+import "@spectrum-web-components/button/sp-button.js";
+
+import addOnUISdk from "https://express.adobe.com/static/add-on-sdk/sdk.js";
+
+// Wait until the addOnUISdk has been loaded
 addOnUISdk.ready.then(async () => {
-    console.log("addOnUISdk is ready for use.");
+// ZAG:
+  console.log("addOnUISdk is ready for use.");
 
-    // Get the UI runtime.
-    const { runtime } = addOnUISdk.instance;
+  // API to expose to the Document Sandbox
+  const iframeApi = {
+    createTable(documentData) {
+      /* ... */
+    },
+    toggleStatus(sdk) {
+      /* ... */
+    },
+  };
+  runtime.exposeApi(iframeApi);
 
-    // Get the proxy object, which is required
-    // to call the APIs defined in the Document Sandbox runtime
-    // i.e., in the `code.js` file of this add-on.
-    const sandboxProxy = await runtime.apiProxy("documentSandbox");
+  // Toggle the iframe SDK status light
+  iframeApi.toggleStatus("iframe");
 
-    const createRectangleButton = document.getElementById("createRectangle");
-    createRectangleButton.addEventListener("click", async event => {
-        await sandboxProxy.createRectangle();
-    });
+  // Import the Document Sandbox API proxy
+  const { runtime } = addOnUISdk.instance;
 
-    // Enable the button only when:
-    // 1. `addOnUISdk` is ready,
-    // 2. `sandboxProxy` is available, and
-    // 3. `click` event listener is registered.
-    createRectangleButton.disabled = false;
+  // ZAG: validate if the name needs to match the folder name
+  const sandboxProxy = await runtime.apiProxy("documentSandbox");
+  // Exposing the iFrame API to the Document Sandbox.
+
+  // Set the button's click handler
+  const statsButton = document.getElementById("stats");
+  statsButton.addEventListener("click", async () => {
+    // Invoke the Document API via Document Sandbox proxy
+    // to get the document metadata and initiate the table creation process
+    await sandboxProxy.getDocumentData(); // 👈 mind the await
+  });
+
+  // Enable the button only when the addOnUISdk is ready
+  statsButton.disabled = false;
 });
